@@ -8,6 +8,7 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{hyperref}
+\usepackage{listings}
 \usepackage{etoolbox}
 \AtBeginEnvironment{quote}{\small}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
@@ -34,7 +35,7 @@ ben.zhang@uwaterloo.ca}
 \maketitle
 
 \begin{abstract}
-Dynamic programming is a popular technique to reduce the amount of calculations required. This paper explores a variant of dynamic programming that deals with stochastic systems, where process noise is present. In this paper, stochastic optimal control problems are formulated using the Bellman equation and solved efficiently using dynamic programming. This paper is presented as a tutorial paper and focuses on the fundamentals of discrete-time stochastic control problems.
+Dynamic programming is a popular technique to reduce the number of calculations required. This paper explores a variant of dynamic programming that deals with stochastic systems, where process noise is present. In this paper, stochastic optimal control problems are formulated using the Bellman equation and solved efficiently using dynamic programming. This paper is presented as a tutorial paper and focuses on the fundamentals of discrete-time stochastic control problems.
 \end{abstract}
 
 %\section{Introduction and Literature Review}
@@ -43,7 +44,7 @@ Dynamic programming is a popular technique to reduce the amount of calculations 
 
 \section{Problem Formulation}
 
-There are two well-known formulations of the discrete-time stochastic control problem. One formulation is in the state-space form and is analogous to its continuous-time equivalent. It lends itself well to solutions such as Linear Quadratic Gaussian (LQG) control. The other formulation uses state and action sets, and reward and state transition functions. A popular special case of this formulation is the Markov Decision Process (MDP). This formulation is often used when the intended solution is dynamic programming. Analysis on the equivalence of these two formulations is beyond the scope of this paper. We will outline both formulations below and use the latter in the rest of this paper.
+There are two well-known formulations of the discrete-time stochastic control problem. One formulation is in the state-space form and is analogous to its continuous-time equivalent. It lends itself well to solutions such as Linear Quadratic Gaussian (LQG) control. The other formulation uses state and action sets, and reward and state transition functions. A popular special case of this formulation is the Markov Decision Process (MDP). This formulation is often used when the intended solution is dynamic programming. Analysis of the equivalence of these two formulations is beyond the scope of this paper. We will outline both formulations below and use the latter in the rest of this paper.
 
 \subsection{State-Space Formulation}
 
@@ -150,7 +151,7 @@ A gambler has \$2. She is allowed to play a game of chance four times, and her g
 % Alternative problem:
 % Given a set of vertices $X$, each with two edges $A$ and $B$. Each edge has an associated cost. A robot is tasked with finding the optimal path starting from $x_s \in X$ and ending in $x_f \in X$. The robot's actuators are faulty and if the robot chooses to go along edge $A$, it has a probability $p$ of going along edge $A$ and probability $1-p$ of going along edge $B$. Find an optimal policy for the robot to go from state $x_s$ to $x_f$.
 \end{quote}
-For the purpose of our analysis, assume that the plays are pairwise independent (similar to a perfect dice roll, where each roll is independent from any other roll).
+For the purpose of our analysis, assume that the plays are pairwise independent (similar to a perfect dice roll, where each roll is independent of any other roll).
 
 Notice that because of the independence assumption, betting $b$ dollars per round for 2 rounds yield identical returns to betting $2b$ dollars in one round. This is shown below:
 \begin{equation}
@@ -177,22 +178,91 @@ The immediate reward is $1$ when the new wealth is \$6 or above and $0$ otherwis
 
 \subsection{Convergence to Theoretical Winning Probability}
 
-To gain confidence that the value function gives us the theoretical winning probability, We can experimentally show that the experimental proportion of wins is close to theoretical. In graph 
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{dp-convergence.png}
+\caption{Graph showing the convergence of the experimental dynamic programming winning probability to the theoretical dynamic programming winning probability. The blue triangle is the mean and the blue lines denote the standard deviation. The experiment is carried out with the original problem formulation.}
+\label{dp-convergence}
+\end{figure}
 
-We will benchmark the stochastic dynamic programming algorithm alongside the greedy algorithm.
+To gain confidence that the value function gives us the theoretical winning probability, We can experimentally show that the experimental proportion of wins is close to theoretical. In Fig.~\ref{dp-convergence} we see that as we play more games, the sample mean and sample standard deviation of the proportion of wins converge to the theoretical winning probability. In subsequent experiments (excluding performance benchmarks), we will compare the experimental result from the greedy algorithm with the theoretical results from the dynamic programming formulation, in order to reduce computational burden and noise. We will use $100000$ as the number of games in subsequent experiments unless stated otherwise.
 
+\subsection{Performance Comparison (Proportion of Wins)}
 
-By the formulation of the stochastic dynamic programming solution, we can ensure that our solution is optimal in terms of maximizing the expected probability of reaching the goal.
+In this section, we will benchmark the stochastic dynamic programming algorithm alongside the greedy algorithm in terms of the proportion of wins. We will vary parameters of the original problem and graph the performance (proportion of wins) of each algorithm for comparison.
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{dp-vs-greedy-variable-horizon.png}
+\caption{Graph showing the theoretical performance of the dynamic programming algorithm compared with the experimental performance of the greedy algorithm. All parameters except for the variable betting horizon are consistent with the original problem formulation.}
+\label{dp-vs-greedy-variable-horizon}
+\end{figure}
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{dp-vs-greedy-variable-target-wealth.png}
+\caption{Graph showing the theoretical performance of the dynamic programming algorithm compared with the experimental performance of the greedy algorithm. All parameters except for the variable target wealth are consistent with the original problem formulation.}
+\label{dp-vs-greedy-variable-target-wealth}
+\end{figure}
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{dp-vs-greedy-variable-per-play-winning-prob.png}
+\caption{Graph showing the theoretical performance of the dynamic programming algorithm compared with the experimental performance of the greedy algorithm. All parameters except for the variable per-play winning probability are consistent with the original problem formulation.}
+\label{dp-vs-greedy-variable-per-play-winning-prob}
+\end{figure}
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{dp-vs-greedy-variable-per-play-winning-prob-and-betting-horizon-10.png}
+\caption{Graph showing the theoretical performance of the dynamic programming algorithm compared with the experimental performance of the greedy algorithm. All parameters except for the betting horizon (set to 10) and the variable per-play winning probability are consistent with the original problem formulation.}
+\label{dp-vs-greedy-variable-per-play-winning-prob-and-betting-horizon-10}
+\end{figure}
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{dp-vs-greedy-variable-horizon-and-per-play-winning-prob-0_8.png}
+\caption{Graph showing the theoretical performance of the dynamic programming algorithm compared with the experimental performance of the greedy algorithm. All parameters except for the per-play winning probability (set to $0.8$) and  the variable betting horizon are consistent with the original problem formulation.}
+\label{dp-vs-greedy-variable-horizon-and-per-play-winning-prob-0_8}
+\end{figure}
+
+Figs.~\ref{dp-vs-greedy-variable-horizon},~\ref{dp-vs-greedy-variable-target-wealth},~\ref{dp-vs-greedy-variable-per-play-winning-prob} show that there is no significant performance differences between the dynamic programming solution and the greedy solution when individually varying the betting horizon, target wealth, or per-play winning probability. However, as shown in Figs.~\ref{dp-vs-greedy-variable-per-play-winning-prob-and-betting-horizon-10}~and~\ref{dp-vs-greedy-variable-horizon-and-per-play-winning-prob-0_8}, when the per-play winning probability is high ($> 0.5$) and the betting horizon is high ($> 4$), the dynamic programming algorithm vastly outperforms the greedy approach. This may be because:
+\begin{enumerate}
+    \item when the betting horizon is small, the greedy algorithm's lack of look-ahead does not impact the performance significantly.
+    \item when the per-play winning probability is low, the riskiness of the optimal move is high, which happens to make the dynamic programming algorithm take the same ``all-or-nothing'' approach as the greedy algorithm.
+\end{enumerate}
+
+\subsection{Performance Comparison (Computational Performance)}
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{dp-vs-greedy-computation-time.png}
+\caption{Graph showing the computational performance of the dynamic programming algorithm and the greedy algorithm with changing number of games.}
+\label{dp-vs-greedy-computation-time}
+\end{figure}
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{dp-vs-greedy-computation-time-log.png}
+\caption{Graph showing the computational performance of the dynamic programming algorithm and the greedy algorithm with changing number of games. The x axis is a log scale.}
+\label{dp-vs-greedy-computation-time-log}
+\end{figure}
+
+\begin{figure}[htbp]
+\includegraphics[width=\columnwidth]{dp-vs-greedy-computation-time-vs-betting-horizon.png}
+\caption{Graph showing the computational performance of the dynamic programming algorithm and the greedy algorithm with changing betting horizon.}
+\label{dp-vs-greedy-computation-time-vs-betting-horizon}
+\end{figure}
+
+In this section, we will benchmark the stochastic dynamic programming algorithm alongside the greedy algorithm in terms of computational performance.
+
+Figs.~\ref{dp-vs-greedy-computation-time},~\ref{dp-vs-greedy-computation-time-log} show that both the dynamic programming algorithm and the greedy algorithm scale linearly with the number of games, and the scaling term is smaller for the greedy algorithm and larger for the dynamic programming problem. Fig.~\ref{dp-vs-greedy-computation-time-vs-betting-horizon} shows that the computation time for both algorithms is also linear to the betting horizon.
+
+\subsection{Experimental Takeaways}
+
+By the formulation of the stochastic dynamic programming solution, we can ensure that our solution is optimal in terms of maximizing the expected probability of reaching the goal. However, for small problems, the greedy algorithm performs just as well with less computation power.
+
+The experimental results can be reproduced with the code found in \cite{zhang2021}.
 
 \section{Limitations}
 
-Stochastic dynamic programming has a major draw back known as the curse of dimensionality \cite{Rogers2010coursenotes}. When solving the Bellman equation as described in \eqref{eq:value_function}, the value function lookup table grows quickly with respect to the planning horizon. Suppose the size of each $X_k$ is $N_X$, the size of each $A_k$ is $N_A$, and the number of time steps is $n$. Then the total number of function evaluations is $N_XN_An$. For moderately large state space, action space, or planning horizon, the space and computational requirements become paramount. To solve this issue, various approximation approaches have been proposed \cite{powell2007approximate}.
+Stochastic dynamic programming has a major drawback known as the curse of dimensionality \cite{Rogers2010coursenotes}. When solving the Bellman equation as described in \eqref{eq:value_function}, the value function lookup table grows quickly with respect to the planning horizon. Suppose the size of each state space $X_k$ is $N_X$, the size of each action space $A_k$ is $N_A$, and the number of time steps is $n$. Then the total number of function evaluations is $N_XN_An$. For moderately large state space, action space, or planning horizon, the space and computational requirements become paramount. To solve this issue, various approximation approaches have been proposed \cite{powell2007approximate}.
 
 \section{Conclusions}
 
 This tutorial paper explored the field of stochastic dynamic programming, including the problem formulation, deriving the Bellman equation for solving for an optimal policy, outlining the solution methods to the Bellman equation, and benchmarking the stochastic dynamic programming approach with a baseline greedy approach. While the greedy approach is computationally efficient and doesn't require much space, the dynamic programming approach yields the optimal solution.
-
-% TODO: spell check
 
 % Bibliography
 
