@@ -1,6 +1,6 @@
 # Introduction to Stochastic Dynamic Programming
 
-This is a course project for [SYDE 655](https://uwflow.com/course/syde655) at the University of Waterloo.
+This is a course assignment for [SYDE 655](https://uwflow.com/course/syde655) at the University of Waterloo.
 
 ## Paper
 
